@@ -1,7 +1,6 @@
-from django.shortcuts import render
-from rest_framework import generics, permissions
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import ListAPIView
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import Job
 from .serializers import JobSerializer
@@ -10,75 +9,75 @@ from matching.models import Match
 from matching.serializers import MatchSerializer
 
 
-# ✅ Create Job
-class JobCreateView(generics.CreateAPIView):
-    queryset = Job.objects.all()
+class JobViewSet(viewsets.ModelViewSet):
     serializer_class = JobSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # ==========================
+    # RECRUITER JOBS ONLY
+    # ==========================
+    def get_queryset(self):
+        return Job.objects.filter(
+            created_by=self.request.user
+        ).order_by("-created_at")
+
+    # ==========================
+    # AUTO ASSIGN RECRUITER
+    # ==========================
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        serializer.save(
+            created_by=self.request.user
+        )
 
+    # ==========================
+    # JOB MATCHES
+    # ==========================
+    @action(detail=True, methods=["get"])
+    def matches(self, request, pk=None):
+        job = self.get_object()
 
-# ✅ List Jobs - Only show jobs created by the current recruiter
-class JobListView(generics.ListAPIView):
-    serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticated]
+        matches = Match.objects.filter(
+            job=job
+        ).order_by("-score")
 
-    def get_queryset(self):
-        # Only return jobs created by the current user
-        return Job.objects.filter(created_by=self.request.user)
+        serializer = MatchSerializer(
+            matches,
+            many=True
+        )
 
+        return Response(serializer.data)
 
-# ✅ Public Job List - Show all jobs to anyone (for public job listing page)
-class PublicJobListView(generics.ListAPIView):
-    serializer_class = JobSerializer
-    permission_classes = [permissions.AllowAny]
+    # ==========================
+    # TOGGLE ACTIVE STATUS
+    # ==========================
+    @action(detail=True, methods=["patch"])
+    def toggle(self, request, pk=None):
+        job = self.get_object()
 
-    def get_queryset(self):
-        # Return all jobs (not filtered by user)
-        return Job.objects.all()
+        job.is_active = not job.is_active
+        job.save()
 
+        return Response({
+            "id": job.id,
+            "is_active": job.is_active,
+            "message": "Job status updated successfully"
+        })
 
-# ✅ Job Detail
-class JobDetailView(generics.RetrieveAPIView):
-    queryset = Job.objects.all()
-    serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # ==========================
+    # PUBLIC JOB LIST
+    # ==========================
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[permissions.AllowAny]
+    )
+    def public(self, request):
 
-    def get_queryset(self):
-        # Only allow access to jobs created by the current user
-        return Job.objects.filter(created_by=self.request.user)
+        jobs = Job.objects.all().order_by("-created_at")
 
+        serializer = self.get_serializer(
+            jobs,
+            many=True
+        )
 
-# ✅ Job Matches View - Only show matches for jobs created by the current recruiter
-class JobMatchesView(ListAPIView):
-    serializer_class = MatchSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        job_id = self.kwargs["pk"]
-        # Only show matches for jobs created by the current user
-        return Match.objects.filter(job_id=job_id, job__created_by=self.request.user).order_by("-score")
-
-
-# ✅ Update Job
-class JobUpdateView(generics.UpdateAPIView):
-    queryset = Job.objects.all()
-    serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        # Only allow update of jobs created by the current user
-        return Job.objects.filter(created_by=self.request.user)
-
-
-# ✅ Delete Job
-class JobDeleteView(generics.DestroyAPIView):
-    queryset = Job.objects.all()
-    serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        # Only allow delete of jobs created by the current user
-        return Job.objects.filter(created_by=self.request.user)
+        return Response(serializer.data)

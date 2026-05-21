@@ -19,12 +19,13 @@ export default function Login() {
         password,
       });
 
-      const { access, refresh, role } = res.data;
+     const { access, refresh, role, username: loggedUsername } = res.data;  
 
       // Store tokens
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
       localStorage.setItem("role", role);
+      localStorage.setItem("username", loggedUsername);
 
       // Redirect based on role
       if (role === "recruiter") {
@@ -38,7 +39,8 @@ export default function Login() {
     } catch (err) {
       console.error(err);
       alert(
-        err.response?.data?.detail || 
+        err.response?.data?.detail ||
+        err.response?.data?.error || 
         "Login failed. Please check credentials."
       );
     } finally {

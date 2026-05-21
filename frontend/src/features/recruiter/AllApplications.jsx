@@ -12,7 +12,7 @@ export default function AllApplications() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const res = await api.get("recruiter/");
+        const res = await api.get("applications/recruiter/");
         setApplications(res.data);
       } catch (err) {
         console.error(err);

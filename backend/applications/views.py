@@ -116,3 +116,13 @@ class RecruiterApplicationsView(APIView):
         applications = Application.objects.filter(job__in=jobs).select_related('candidate', 'job')
         serializer = ApplicationSerializer(applications, many=True)
         return Response(serializer.data)
+
+
+class CandidateApplicationsView(APIView):
+    """Get all applications submitted by the logged-in candidate"""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        applications = Application.objects.filter(candidate=request.user).select_related('job')
+        serializer = ApplicationSerializer(applications, many=True)
+        return Response(serializer.data)

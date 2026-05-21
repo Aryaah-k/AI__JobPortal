@@ -35,7 +35,7 @@ export default function CreateJob() {
     try {
       setLoading(true);
 
-      await api.post("recruiter/jobs/create/", {
+      await api.post("jobs/jobs/", {
         ...form,
         salary: form.salary || null, // send null if empty
       });

@@ -1,10 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import CandidateProfile, RecruiterProfile
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
 
+# -----------------------------
+# REGISTER SERIALIZER
+# -----------------------------
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -22,12 +26,34 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+# -----------------------------
+# USER SERIALIZER
+# -----------------------------
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'role')
 
 
+# -----------------------------
+# JWT LOGIN SERIALIZER (IMPORTANT FIX)
+# -----------------------------
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # 🔥 ADD USER INFO TO RESPONSE
+        data['username'] = self.user.username
+        data['role'] = self.user.role
+        data['email'] = self.user.email
+
+        return data
+
+
+# -----------------------------
+# PROFILES
+# -----------------------------
 class CandidateProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CandidateProfile

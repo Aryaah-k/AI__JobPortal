@@ -19,6 +19,7 @@ from django.urls import path , include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from applications.views import ApplyJobView
 
 urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -29,9 +30,11 @@ urlpatterns = [
     path("api/matching/", include("matching.urls")),
     path("api/resumes/", include("resumes.urls")),
     path('api/users/', include('users.urls')),
-    path("api/", include("applications.urls")),
-    path("api/recruiter/jobs/", include("jobs.urls")),
+    
+    
     path("api/jobs/", include("jobs.urls")),
+    path("api/applications/", include("applications.urls")),
+    path("api/apply/<int:job_id>/", ApplyJobView.as_view(), name="legacy-apply-job"),
     path("api/notifications/", include("notifications.urls")),
     path("api/analytics/", include("analytics.urls")),
 ]

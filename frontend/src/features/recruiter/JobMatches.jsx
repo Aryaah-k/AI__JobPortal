@@ -11,7 +11,7 @@ export default function JobMatches() {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const res = await api.get(`recruiter/jobs/${jobId}/matches/`);
+        const res = await api.get(`matching/recruiter/jobs/${jobId}/matches/`)
         setMatches(res.data);
       } catch (err) {
         console.error(err);

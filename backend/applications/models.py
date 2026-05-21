@@ -34,6 +34,13 @@ class Application(models.Model):
 
     class Meta:
         unique_together = ("candidate", "job")
+        ordering = ["-applied_at"]
+        indexes = [
+            models.Index(fields=["job"]),
+            models.Index(fields=["candidate"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["applied_at"]),
+        ]
 
     def __str__(self):
         return f"{self.candidate.email} - {self.job.title}"

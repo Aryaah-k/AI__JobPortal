@@ -43,7 +43,7 @@ export default function ApplicationModal({ job, onClose, onSuccess }) {
         data.append("documents", formData.documents);
       }
 
-      await api.post(`apply/${job.id}/`, data, {
+      await api.post(`applications/apply/${job.id}/`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
