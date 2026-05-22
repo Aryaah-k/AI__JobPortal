@@ -22,7 +22,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import RecruiterLayout from "./components/RecruiterLayout";
 
 import Jobs from "./pages/Jobs";
-import Companies from "./pages/companies";
+import Companies from "./pages/Companies";
 import CompanyJobs from "./pages/CompanyJobs";
 import SavedJobs from "./pages/SavedJobs";
 import AppliedJobs from "./pages/AppliedJobs";
