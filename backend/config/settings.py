@@ -94,22 +94,15 @@ TEMPLATES = [
 # -------------------------
 # DATABASE (RENDER POSTGRES + LOCAL FALLBACK)
 # -------------------------
-DATABASE_URL = env("DATABASE_URL", default=None)
-if DATABASE_URL:
-    DATABASES = {
+
+DATABASES = {
         "default": dj_database_url.config(
-            default=DATABASE_URL,
+            default=env("DATABASE_URL"),
             conn_max_age=600,
             ssl_require=True
         )
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+
 # -------------------------
 # PASSWORD VALIDATION
 # -------------------------
