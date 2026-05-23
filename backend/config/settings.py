@@ -155,11 +155,18 @@ REST_FRAMEWORK = {
 # -------------------------
 # CORS (VERCEL FRONTEND)
 # -------------------------
+CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS", default=True)
+
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://ai-job-portal-ten.vercel.app",
 ])
+
+# Allow all Vercel branch/preview deployments
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+]
 
 # -------------------------
 # CSRF (VERCEL FRONTEND)
@@ -168,7 +175,7 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://ai-job-portal-ten.vercel.app",
-    
+    "https://*.vercel.app",
 ])
 
 # -------------------------
