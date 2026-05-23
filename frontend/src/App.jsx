@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useEffect, useState } from "react";
-
+const routerFuture = { v7_startTransition: true, v7_relativeSplatPath: true };
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CandidateDashboard from "./pages/CandidateDashboard";
@@ -97,7 +97,7 @@ function HomeRedirect() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={routerFuture}>
       <Routes>
 
         {/* Home Route */}
