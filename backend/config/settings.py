@@ -165,7 +165,8 @@ CORS_ALLOWED_ORIGINS = env.list(
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://jobportal-ai-xi.vercel.app",
-        "https://ai-job-portal-arya-k1.vercel.app",
+        "https://jobportal-ai-git-main-arya-k1.vercel.app",
+        "https://ai-job-portal-ten.vercel.app",
     ])
 
 # Allow all Vercel branch/preview deployments
