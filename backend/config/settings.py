@@ -164,7 +164,7 @@ CORS_ALLOWED_ORIGINS = env.list(
     "CORS_ALLOWED_ORIGINS", default=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://ai-job-portal-ten.vercel.app",
+        "https://jobportal-ai-xi.vercel.app",
         "https://ai-job-portal-arya-k1.vercel.app",
     ])
 
